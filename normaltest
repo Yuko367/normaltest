@@ -1,0 +1,266 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+
+-- STATES
+local flying = false
+local noclip = false
+local flySpeed = 60
+local espEnabled = false
+
+local bv, bg
+
+-- CONTROL
+local running = true
+local connections = {}
+local espObjects = {}
+
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0,260,0,220)
+frame.Position = UDim2.new(0,20,0,20)
+frame.BackgroundColor3 = Color3.fromRGB(35,35,35)
+frame.BackgroundTransparency = 0.1
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0,12)
+
+-- TITLE SHADOW
+local titleShadow = Instance.new("TextLabel")
+titleShadow.Size = UDim2.new(1,0,0,35)
+titleShadow.Position = UDim2.new(0,2,0,2)
+titleShadow.Text = "Yuko☠️🔥 Hub"
+titleShadow.Font = Enum.Font.GothamBlack
+titleShadow.TextSize = 24
+titleShadow.TextColor3 = Color3.new(0,0,0)
+titleShadow.TextTransparency = 0.4
+titleShadow.BackgroundTransparency = 1
+titleShadow.Parent = frame
+
+-- TITLE MAIN
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,35)
+title.Text = "Yuko☠️🔥 Hub"
+title.Font = Enum.Font.GothamBlack
+title.TextSize = 24
+title.TextColor3 = Color3.fromRGB(240,240,240)
+title.BackgroundTransparency = 1
+title.Parent = frame
+
+-- BUTTON STYLE
+local function style(btn)
+	btn.Size = UDim2.new(0,220,0,30)
+	btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 16
+	btn.TextColor3 = Color3.fromRGB(230,230,230)
+
+	local c = Instance.new("UICorner", btn)
+	c.CornerRadius = UDim.new(0,8)
+end
+
+-- FLY
+local flyButton = Instance.new("TextButton")
+flyButton.Position = UDim2.new(0,20,0,50)
+flyButton.Text = "Fly: OFF (Q)"
+flyButton.Parent = frame
+style(flyButton)
+
+-- NOCLIP
+local noclipButton = Instance.new("TextButton")
+noclipButton.Position = UDim2.new(0,20,0,85)
+noclipButton.Text = "Noclip: OFF (R)"
+noclipButton.Parent = frame
+style(noclipButton)
+
+-- ESP
+local espButton = Instance.new("TextButton")
+espButton.Position = UDim2.new(0,20,0,120)
+espButton.Text = "ESP: OFF"
+espButton.Parent = frame
+style(espButton)
+
+-- SPEED
+local speedBox = Instance.new("TextBox")
+speedBox.Position = UDim2.new(0,20,0,155)
+speedBox.Size = UDim2.new(0,220,0,30)
+speedBox.Text = tostring(flySpeed)
+speedBox.Font = Enum.Font.GothamBold
+speedBox.TextSize = 16
+speedBox.BackgroundColor3 = Color3.fromRGB(50,50,50)
+speedBox.TextColor3 = Color3.new(1,1,1)
+speedBox.Parent = frame
+Instance.new("UICorner", speedBox).CornerRadius = UDim.new(0,8)
+
+-- CLOSE
+local close = Instance.new("TextButton")
+close.Size = UDim2.new(0,25,0,25)
+close.Position = UDim2.new(1,-30,0,5)
+close.Text = "X"
+close.BackgroundColor3 = Color3.fromRGB(255,60,60)
+close.TextColor3 = Color3.new(1,1,1)
+close.Font = Enum.Font.GothamBold
+close.Parent = frame
+Instance.new("UICorner", close)
+
+-- FLY FUNCTIONS
+local function startFly()
+	if flying then return end
+	flying = true
+	flyButton.Text = "Fly: ON (Q)"
+
+	bv = Instance.new("BodyVelocity", hrp)
+	bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+
+	bg = Instance.new("BodyGyro", hrp)
+	bg.MaxTorque = Vector3.new(1e5,1e5,1e5)
+end
+
+local function stopFly()
+	flying = false
+	flyButton.Text = "Fly: OFF (Q)"
+	if bv then bv:Destroy() end
+	if bg then bg:Destroy() end
+end
+
+-- ESP
+local function createESP(plr)
+	if plr == player then return end
+
+	local bill = Instance.new("BillboardGui")
+	bill.Size = UDim2.new(0,200,0,40)
+	bill.AlwaysOnTop = true
+
+	local txtShadow = Instance.new("TextLabel", bill)
+	txtShadow.Size = UDim2.new(1,0,1,0)
+	txtShadow.Position = UDim2.new(0,2,0,2)
+	txtShadow.BackgroundTransparency = 1
+	txtShadow.TextColor3 = Color3.new(0,0,0)
+	txtShadow.TextTransparency = 0.4
+	txtShadow.Font = Enum.Font.GothamBold
+	txtShadow.TextSize = 14
+
+	local txt = Instance.new("TextLabel", bill)
+	txt.Size = UDim2.new(1,0,1,0)
+	txt.BackgroundTransparency = 1
+	txt.TextColor3 = Color3.new(1,1,1)
+	txt.Font = Enum.Font.GothamBold
+	txt.TextSize = 14
+
+	espObjects[plr] = {gui = bill, main = txt, shadow = txtShadow}
+end
+
+-- BUTTONS
+table.insert(connections, flyButton.MouseButton1Click:Connect(function()
+	if flying then stopFly() else startFly() end
+end))
+
+table.insert(connections, noclipButton.MouseButton1Click:Connect(function()
+	noclip = not noclip
+	noclipButton.Text = noclip and "ON" or "OFF"
+end))
+
+table.insert(connections, espButton.MouseButton1Click:Connect(function()
+	espEnabled = not espEnabled
+	espButton.Text = espEnabled and "ESP: ON" or "ESP: OFF"
+
+	if not espEnabled then
+		for _,v in pairs(espObjects) do
+			v.gui:Destroy()
+		end
+		table.clear(espObjects)
+	end
+end))
+
+table.insert(connections, close.MouseButton1Click:Connect(function()
+	running = false
+	stopFly()
+
+	for _,v in pairs(espObjects) do
+		v.gui:Destroy()
+	end
+
+	for _,v in pairs(connections) do
+		v:Disconnect()
+	end
+
+	gui:Destroy()
+end))
+
+-- KEYS
+table.insert(connections, UserInputService.InputBegan:Connect(function(i,g)
+	if g then return end
+	if i.KeyCode == Enum.KeyCode.Q then
+		if flying then stopFly() else startFly() end
+	end
+	if i.KeyCode == Enum.KeyCode.R then
+		noclip = not noclip
+	end
+end))
+
+-- SPEED
+speedBox.FocusLost:Connect(function()
+	local n = tonumber(speedBox.Text)
+	if n then flySpeed = n end
+end)
+
+-- LOOP
+table.insert(connections, RunService.RenderStepped:Connect(function()
+	if not running then return end
+
+	local cam = workspace.CurrentCamera
+
+	if flying and bv and bg then
+		local dir = Vector3.zero
+
+		if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir += cam.CFrame.LookVector end
+		if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir -= cam.CFrame.LookVector end
+		if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir -= cam.CFrame.RightVector end
+		if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir += cam.CFrame.RightVector end
+
+		if dir.Magnitude > 0 then dir = dir.Unit end
+
+		bv.Velocity = dir * flySpeed
+		bg.CFrame = cam.CFrame
+	end
+
+	if noclip then
+		for _,v in pairs(character:GetDescendants()) do
+			if v:IsA("BasePart") then v.CanCollide = false end
+		end
+	end
+
+	if espEnabled then
+		for _,plr in pairs(Players:GetPlayers()) do
+			if plr ~= player then
+				local c = plr.Character
+				local h = c and c:FindFirstChild("HumanoidRootPart")
+
+				if h then
+					if not espObjects[plr] then createESP(plr) end
+					local d = espObjects[plr]
+
+					d.gui.Adornee = h
+					d.gui.Parent = h
+
+					local dist = math.floor((hrp.Position - h.Position).Magnitude)
+					local text = plr.Name.." ["..dist.."]"
+
+					d.main.Text = text
+					d.shadow.Text = text
+				end
+			end
+		end
+	end
+end))
