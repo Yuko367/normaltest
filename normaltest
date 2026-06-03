@@ -826,32 +826,28 @@ if flying and bv and bg then
 	if UIS:IsKeyDown(Enum.KeyCode.W) then
 		dir += cam.CFrame.LookVector
 	end
-
 	if UIS:IsKeyDown(Enum.KeyCode.S) then
 		dir -= cam.CFrame.LookVector
 	end
-
 	if UIS:IsKeyDown(Enum.KeyCode.A) then
 		dir -= cam.CFrame.RightVector
 	end
-
 	if UIS:IsKeyDown(Enum.KeyCode.D) then
 		dir += cam.CFrame.RightVector
 	end
-
 	if UIS:IsKeyDown(Enum.KeyCode.Space) then
 		dir += Vector3.new(0,1,0)
 	end
-
 	if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then
 		dir -= Vector3.new(0,1,0)
 	end
 
 	if dir.Magnitude > 0 then
-		dir = dir.Unit
+		bv.Velocity = dir.Unit * flySpeed
+	else
+		bv.Velocity = Vector3.zero
 	end
 
-	bv.Velocity = dir * flySpeed
 	bg.CFrame = cam.CFrame
 end
 
@@ -878,12 +874,12 @@ UIS.InputBegan:Connect(function(i,g)
         if flying then
             bv = Instance.new("BodyVelocity")
             bv.Parent = hrp
-            bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+            bv.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
             bv.Velocity = Vector3.zero
 
             bg = Instance.new("BodyGyro")
             bg.Parent = hrp
-            bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+            bg.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
             bg.P = 10000
 
         else
