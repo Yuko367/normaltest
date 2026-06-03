@@ -869,50 +869,47 @@ end
 end)
 
 -- INPUT
--- INPUT
 UIS.InputBegan:Connect(function(i,g)
-	if g then return end
+    if g then return end
 
-	if i.KeyCode == Enum.KeyCode.Q then
-		flying = not flying
+    if i.KeyCode == Enum.KeyCode.Q then
+        flying = not flying
 
-		if flying then
-			bv = Instance.new("BodyVelocity")
-			bv.Parent = hrp
-			bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-			bv.Velocity = Vector3.zero
+        if flying then
+            bv = Instance.new("BodyVelocity")
+            bv.Parent = hrp
+            bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+            bv.Velocity = Vector3.zero
 
-			bg = Instance.new("BodyGyro")
-			bg.Parent = hrp
-			bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
-			bg.P = 10000
-	else
-	flying = false
+            bg = Instance.new("BodyGyro")
+            bg.Parent = hrp
+            bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+            bg.P = 10000
 
-	if bv then
-		bv:Destroy()
-		bv = nil
-	end
+        else
+            if bv then
+                bv:Destroy()
+                bv = nil
+            end
 
-	if bg then
-		bg:Destroy()
-		bg = nil
-	end
+            if bg then
+                bg:Destroy()
+                bg = nil
+            end
 
-	local hum = char and char:FindFirstChildOfClass("Humanoid")
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
 
-	if hum and hrp then
-		-- Ép rơi xuống
-		hrp.AssemblyLinearVelocity = Vector3.new(0,-80,0)
+            if hum and hrp then
+                hrp.AssemblyLinearVelocity = Vector3.new(0,-80,0)
+                hum.PlatformStand = false
+                hum:ChangeState(Enum.HumanoidStateType.Freefall)
+            end
+        end
+    end
 
-		hum.PlatformStand = false
-		hum:ChangeState(Enum.HumanoidStateType.Freefall)
-	end
-end
-
-	if i.KeyCode == Enum.KeyCode.R then
-		noclip = not noclip
-	end
+    if i.KeyCode == Enum.KeyCode.R then
+        noclip = not noclip
+    end
 end)
 
 -- CLOSE
