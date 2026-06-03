@@ -842,11 +842,11 @@ if flying and bv and bg then
 		dir -= Vector3.new(0,1,0)
 	end
 
-	if dir.Magnitude > 0 then
-		bv.Velocity = dir.Unit * flySpeed
-	else
-		bv.Velocity = Vector3.zero
-	end
+if dir.Magnitude > 0 then
+    bv.Velocity = dir.Unit * flySpeed
+else
+    bv.Velocity = Vector3.new(0,0,0)
+end
 
 	bg.CFrame = cam.CFrame
 end
@@ -897,9 +897,7 @@ local hum = char:FindFirstChildOfClass("Humanoid")
 
 if hum then
     hum.PlatformStand = false
-    hum:ChangeState(Enum.HumanoidStateType.Freefall)
-
-    hrp.AssemblyLinearVelocity = Vector3.new(0, -30, 0)
+    hum:ChangeState(Enum.HumanoidStateType.GettingUp)
 end
 
     if i.KeyCode == Enum.KeyCode.R then
