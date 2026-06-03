@@ -155,6 +155,16 @@ style(espBtn)
 espBtn.MouseButton1Click:Connect(function()
 	espEnabled = not espEnabled
 	espBtn.Text = espEnabled and "ESP ON" or "ESP OFF"
+
+	if not espEnabled then
+		for _, data in pairs(espObjects) do
+			if data.gui then
+				data.gui:Destroy()
+			end
+		end
+
+		espObjects = {}
+	end
 end)
 speedBox.Position = UDim2.new(0,20,0,80)
 speedBox.Size = UDim2.new(0,280,0,30)
