@@ -887,25 +887,27 @@ UIS.InputBegan:Connect(function(i,g)
 			bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
 			bg.P = 10000
 		else
-			if bv then
-				bv:Destroy()
-				bv = nil
-			end
-
-			if bg then
-				bg:Destroy()
-				bg = nil
-			end
-
-			hrp.AssemblyLinearVelocity = Vector3.zero
-			hrp.AssemblyAngularVelocity = Vector3.zero
-
-			local hum = char:FindFirstChildOfClass("Humanoid")
-			if hum then
-				hum:ChangeState(Enum.HumanoidStateType.Running)
-			end
-		end
+	if bv then
+		bv:Destroy()
+		bv = nil
 	end
+
+	if bg then
+		bg:Destroy()
+		bg = nil
+	end
+
+	local hum = char:FindFirstChildOfClass("Humanoid")
+
+	if hum then
+		hum.PlatformStand = false
+		hum:ChangeState(Enum.HumanoidStateType.Freefall)
+
+		task.wait()
+
+		hum:ChangeState(Enum.HumanoidStateType.Running)
+	end
+end
 
 	if i.KeyCode == Enum.KeyCode.R then
 		noclip = not noclip
