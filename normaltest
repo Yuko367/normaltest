@@ -875,10 +875,15 @@ UIS.InputBegan:Connect(function(i,g)
 	if i.KeyCode == Enum.KeyCode.Q then
 		flying = not flying
 		if flying then
-			bv = Instance.new("BodyVelocity", hrp)
-			bv.MaxForce = Vector3.new(1e5,1e5,1e5)
-			bg = Instance.new("BodyGyro", hrp)
-			bg.MaxTorque = Vector3.new(1e5,1e5,1e5)
+bv = Instance.new("BodyVelocity")
+bv.Parent = hrp
+bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+bv.Velocity = Vector3.zero
+
+bg = Instance.new("BodyGyro")
+bg.Parent = hrp
+bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+bg.P = 10000
 		else
 	if bv then
 		bv:Destroy()
