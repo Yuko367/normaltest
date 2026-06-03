@@ -887,25 +887,24 @@ UIS.InputBegan:Connect(function(i,g)
             bg.P = 10000
 
         else
-            if bv then
-                bv:Destroy()
-                bv = nil
-            end
+if bv then
+    bv:Destroy()
+    bv = nil
+end
 
-            if bg then
-                bg:Destroy()
-                bg = nil
-            end
+if bg then
+    bg:Destroy()
+    bg = nil
+end
 
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
+local hum = char:FindFirstChildOfClass("Humanoid")
 
-            if hum and hrp then
-                hrp.AssemblyLinearVelocity = Vector3.new(0,-80,0)
-                hum.PlatformStand = false
-                hum:ChangeState(Enum.HumanoidStateType.Freefall)
-            end
-        end
-    end
+if hum then
+    hum.PlatformStand = false
+    hum:ChangeState(Enum.HumanoidStateType.Freefall)
+
+    hrp.AssemblyLinearVelocity = Vector3.new(0, -30, 0)
+end
 
     if i.KeyCode == Enum.KeyCode.R then
         noclip = not noclip
