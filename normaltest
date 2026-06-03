@@ -819,33 +819,39 @@ end
 
 	local dir = Vector3.zero
 
+local cam = workspace.CurrentCamera
+local dir = Vector3.zero
+
 if UIS:IsKeyDown(Enum.KeyCode.W) then
-    dir += cam.CFrame.LookVector
+	dir += cam.CFrame.LookVector
 end
 
 if UIS:IsKeyDown(Enum.KeyCode.S) then
-    dir -= cam.CFrame.LookVector
+	dir -= cam.CFrame.LookVector
 end
 
 if UIS:IsKeyDown(Enum.KeyCode.A) then
-    dir -= cam.CFrame.RightVector
+	dir -= cam.CFrame.RightVector
 end
 
 if UIS:IsKeyDown(Enum.KeyCode.D) then
-    dir += cam.CFrame.RightVector
+	dir += cam.CFrame.RightVector
 end
 
 if UIS:IsKeyDown(Enum.KeyCode.Space) then
-    dir += Vector3.new(0,1,0)
+	dir += Vector3.new(0,1,0)
 end
 
-if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
-    dir -= Vector3.new(0,1,0)
+if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then
+	dir -= Vector3.new(0,1,0)
 end
 
 if dir.Magnitude > 0 then
-    dir = dir.Unit
+	dir = dir.Unit
 end
+
+bv.Velocity = dir * flySpeed
+bg.CFrame = cam.CFrame
 
 bv.Velocity = dir * flySpeed
 bg.CFrame = cam.CFrame
