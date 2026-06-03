@@ -869,9 +869,7 @@ end
 end)
 
 -- INPUT
-UIS.InputBegan:Connect(function(i,g)
-	if g then return end
-
+-- INPUT
 UIS.InputBegan:Connect(function(i,g)
 	if g then return end
 
@@ -888,7 +886,6 @@ UIS.InputBegan:Connect(function(i,g)
 			bg.Parent = hrp
 			bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
 			bg.P = 10000
-
 		else
 			if bv then
 				bv:Destroy()
