@@ -880,10 +880,24 @@ UIS.InputBegan:Connect(function(i,g)
 			bg = Instance.new("BodyGyro", hrp)
 			bg.MaxTorque = Vector3.new(1e5,1e5,1e5)
 		else
-			if bv then bv:Destroy() end
-			if bg then bg:Destroy() end
-		end
+	if bv then
+		bv:Destroy()
+		bv = nil
 	end
+
+	if bg then
+		bg:Destroy()
+		bg = nil
+	end
+
+	hrp.Velocity = Vector3.zero
+	hrp.RotVelocity = Vector3.zero
+
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if hum then
+		hum:ChangeState(Enum.HumanoidStateType.Freefall)
+	end
+end
 
 	if i.KeyCode == Enum.KeyCode.R then
 		noclip = not noclip
