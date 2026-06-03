@@ -923,11 +923,13 @@ UIS.InputBegan:Connect(function(i,g)
                 bg = nil
             end
 
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum.PlatformStand = false
-                hum:ChangeState(Enum.HumanoidStateType.GettingUp)
-            end
+local hum = char:FindFirstChildOfClass("Humanoid")
+
+if hum then
+    hum.PlatformStand = false
+    hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+end
+
         end
     end
 
