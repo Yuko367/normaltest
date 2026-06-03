@@ -855,6 +855,14 @@ if flying and bv and bg then
 	bg.CFrame = cam.CFrame
 end
 
+if noclip and char then
+	for _,v in pairs(char:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CanCollide = false
+		end
+	end
+end
+
 	if spinning then
 		hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(spinSpeed), 0)
 	end
