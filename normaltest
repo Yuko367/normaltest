@@ -872,37 +872,43 @@ end)
 UIS.InputBegan:Connect(function(i,g)
 	if g then return end
 
+UIS.InputBegan:Connect(function(i,g)
+	if g then return end
+
 	if i.KeyCode == Enum.KeyCode.Q then
 		flying = not flying
+
 		if flying then
-bv = Instance.new("BodyVelocity")
-bv.Parent = hrp
-bv.MaxForce = Vector3.new(9e9,9e9,9e9)
-bv.Velocity = Vector3.zero
+			bv = Instance.new("BodyVelocity")
+			bv.Parent = hrp
+			bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+			bv.Velocity = Vector3.zero
 
-bg = Instance.new("BodyGyro")
-bg.Parent = hrp
-bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
-bg.P = 10000
+			bg = Instance.new("BodyGyro")
+			bg.Parent = hrp
+			bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+			bg.P = 10000
+
 		else
-	if bv then
-		bv:Destroy()
-		bv = nil
-	end
+			if bv then
+				bv:Destroy()
+				bv = nil
+			end
 
-	if bg then
-		bg:Destroy()
-		bg = nil
-	end
+			if bg then
+				bg:Destroy()
+				bg = nil
+			end
 
-	hrp.Velocity = Vector3.zero
-	hrp.RotVelocity = Vector3.zero
+			hrp.AssemblyLinearVelocity = Vector3.zero
+			hrp.AssemblyAngularVelocity = Vector3.zero
 
-	local hum = char:FindFirstChildOfClass("Humanoid")
-	if hum then
-		hum:ChangeState(Enum.HumanoidStateType.Freefall)
+			local hum = char:FindFirstChildOfClass("Humanoid")
+			if hum then
+				hum:ChangeState(Enum.HumanoidStateType.Running)
+			end
+		end
 	end
-end
 
 	if i.KeyCode == Enum.KeyCode.R then
 		noclip = not noclip
