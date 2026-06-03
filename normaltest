@@ -886,7 +886,9 @@ UIS.InputBegan:Connect(function(i,g)
 			bg.Parent = hrp
 			bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
 			bg.P = 10000
-		else
+	else
+	flying = false
+
 	if bv then
 		bv:Destroy()
 		bv = nil
@@ -897,15 +899,14 @@ UIS.InputBegan:Connect(function(i,g)
 		bg = nil
 	end
 
-	local hum = char:FindFirstChildOfClass("Humanoid")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
 
-	if hum then
+	if hum and hrp then
+		-- Ép rơi xuống
+		hrp.AssemblyLinearVelocity = Vector3.new(0,-80,0)
+
 		hum.PlatformStand = false
 		hum:ChangeState(Enum.HumanoidStateType.Freefall)
-
-		task.wait()
-
-		hum:ChangeState(Enum.HumanoidStateType.Running)
 	end
 end
 
