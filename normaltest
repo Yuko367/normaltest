@@ -33,10 +33,9 @@ frame.Active = true
 frame.Draggable = true
 frame.Parent = gui
 
-local corner = Instance.new("UICorner", frame)
-corner.CornerRadius = UDim.new(0,12)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
 
--- TITLE SHADOW
+-- TITLE (shadow style)
 local titleShadow = Instance.new("TextLabel")
 titleShadow.Size = UDim2.new(1,0,0,35)
 titleShadow.Position = UDim2.new(0,2,0,2)
@@ -48,7 +47,6 @@ titleShadow.TextTransparency = 0.4
 titleShadow.BackgroundTransparency = 1
 titleShadow.Parent = frame
 
--- TITLE MAIN
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1,0,0,35)
 title.Text = "Yuko☠️🔥 Hub"
@@ -58,33 +56,29 @@ title.TextColor3 = Color3.fromRGB(240,240,240)
 title.BackgroundTransparency = 1
 title.Parent = frame
 
--- BUTTON STYLE
+-- STYLE FUNCTION
 local function style(btn)
 	btn.Size = UDim2.new(0,220,0,30)
 	btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
 	btn.Font = Enum.Font.GothamBold
 	btn.TextSize = 16
 	btn.TextColor3 = Color3.fromRGB(230,230,230)
-
-	local c = Instance.new("UICorner", btn)
-	c.CornerRadius = UDim.new(0,8)
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 end
 
--- FLY
+-- BUTTONS
 local flyButton = Instance.new("TextButton")
 flyButton.Position = UDim2.new(0,20,0,50)
 flyButton.Text = "Fly: OFF (Q)"
 flyButton.Parent = frame
 style(flyButton)
 
--- NOCLIP
 local noclipButton = Instance.new("TextButton")
 noclipButton.Position = UDim2.new(0,20,0,85)
 noclipButton.Text = "Noclip: OFF (R)"
 noclipButton.Parent = frame
 style(noclipButton)
 
--- ESP
 local espButton = Instance.new("TextButton")
 espButton.Position = UDim2.new(0,20,0,120)
 espButton.Text = "ESP: OFF"
@@ -114,7 +108,7 @@ close.Font = Enum.Font.GothamBold
 close.Parent = frame
 Instance.new("UICorner", close)
 
--- FLY FUNCTIONS
+-- FLY
 local function startFly()
 	if flying then return end
 	flying = true
@@ -142,33 +136,33 @@ local function createESP(plr)
 	bill.Size = UDim2.new(0,200,0,40)
 	bill.AlwaysOnTop = true
 
-	local txtShadow = Instance.new("TextLabel", bill)
-	txtShadow.Size = UDim2.new(1,0,1,0)
-	txtShadow.Position = UDim2.new(0,2,0,2)
-	txtShadow.BackgroundTransparency = 1
-	txtShadow.TextColor3 = Color3.new(0,0,0)
-	txtShadow.TextTransparency = 0.4
-	txtShadow.Font = Enum.Font.GothamBold
-	txtShadow.TextSize = 14
+	local shadow = Instance.new("TextLabel", bill)
+	shadow.Size = UDim2.new(1,0,1,0)
+	shadow.Position = UDim2.new(0,2,0,2)
+	shadow.BackgroundTransparency = 1
+	shadow.TextColor3 = Color3.new(0,0,0)
+	shadow.TextTransparency = 0.4
+	shadow.Font = Enum.Font.GothamBold
+	shadow.TextSize = 14
 
-	local txt = Instance.new("TextLabel", bill)
-	txt.Size = UDim2.new(1,0,1,0)
-	txt.BackgroundTransparency = 1
-	txt.TextColor3 = Color3.new(1,1,1)
-	txt.Font = Enum.Font.GothamBold
-	txt.TextSize = 14
+	local main = Instance.new("TextLabel", bill)
+	main.Size = UDim2.new(1,0,1,0)
+	main.BackgroundTransparency = 1
+	main.TextColor3 = Color3.new(1,1,1)
+	main.Font = Enum.Font.GothamBold
+	main.TextSize = 14
 
-	espObjects[plr] = {gui = bill, main = txt, shadow = txtShadow}
+	espObjects[plr] = {gui = bill, main = main, shadow = shadow}
 end
 
--- BUTTONS
+-- BUTTON EVENTS
 table.insert(connections, flyButton.MouseButton1Click:Connect(function()
 	if flying then stopFly() else startFly() end
 end))
 
 table.insert(connections, noclipButton.MouseButton1Click:Connect(function()
 	noclip = not noclip
-	noclipButton.Text = noclip and "ON" or "OFF"
+	noclipButton.Text = noclip and "Noclip: ON (R)" or "Noclip: OFF (R)"
 end))
 
 table.insert(connections, espButton.MouseButton1Click:Connect(function()
@@ -176,9 +170,7 @@ table.insert(connections, espButton.MouseButton1Click:Connect(function()
 	espButton.Text = espEnabled and "ESP: ON" or "ESP: OFF"
 
 	if not espEnabled then
-		for _,v in pairs(espObjects) do
-			v.gui:Destroy()
-		end
+		for _,v in pairs(espObjects) do v.gui:Destroy() end
 		table.clear(espObjects)
 	end
 end))
@@ -187,25 +179,23 @@ table.insert(connections, close.MouseButton1Click:Connect(function()
 	running = false
 	stopFly()
 
-	for _,v in pairs(espObjects) do
-		v.gui:Destroy()
-	end
-
-	for _,v in pairs(connections) do
-		v:Disconnect()
-	end
+	for _,v in pairs(espObjects) do v.gui:Destroy() end
+	for _,v in pairs(connections) do v:Disconnect() end
 
 	gui:Destroy()
 end))
 
--- KEYS
+-- KEYBINDS (FIXED)
 table.insert(connections, UserInputService.InputBegan:Connect(function(i,g)
-	if g then return end
+	if g or not running then return end
+
 	if i.KeyCode == Enum.KeyCode.Q then
 		if flying then stopFly() else startFly() end
 	end
+
 	if i.KeyCode == Enum.KeyCode.R then
 		noclip = not noclip
+		noclipButton.Text = noclip and "Noclip: ON (R)" or "Noclip: OFF (R)"
 	end
 end))
 
@@ -217,7 +207,7 @@ end)
 
 -- LOOP
 table.insert(connections, RunService.RenderStepped:Connect(function()
-	if not running then return end
+	if not running or not character then return end
 
 	local cam = workspace.CurrentCamera
 
